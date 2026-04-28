@@ -12,11 +12,11 @@
         rel="stylesheet">
     <style>
         :root {
+            /* Colors */
             --bg: #334155;
             --surface: #7dd3fc;
             --surface-hover: #38bdf8;
             --border: #0f172a;
-            --border-width: 3px;
             --primary: #0f172a;
             --primary-light: #bae6fd;
             --success: #14532d;
@@ -26,13 +26,32 @@
             --text-main: #000000;
             --text-bg: #cbd5e1;
             --text-dim: #1e1b4b;
+
+            /* Fonts */
+            --font-main: 'Inter', sans-serif;
+            --font-header: 'Patrick Hand', cursive;
+            --font-logo: 'Permanent Marker', cursive;
+
+            /* Sizes & Spacing */
+            --border-width: 3px;
+            --radius-card: 12px;
+            --radius-btn: 8px;
+            --radius-pill: 4px;
+            --radius-full: 999px;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+
+            /* Shadows */
+            --shadow-card: 4px 4px 0px 0px var(--border);
+            --shadow-btn: 3px 3px 0px 0px var(--border);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
+            font-family: var(--font-main);
         }
 
         body {
@@ -62,12 +81,12 @@
         .card {
             background: var(--surface);
             border: var(--border-width) solid var(--border);
-            border-radius: 12px;
-            padding: 1.5rem;
+            border-radius: var(--radius-card);
+            padding: var(--spacing-lg);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
-            box-shadow: 4px 4px 0px 0px var(--border);
+            box-shadow: var(--shadow-card);
         }
 
         .card:hover {
@@ -124,12 +143,12 @@
         .upload-zone {
             flex: 1;
             border: var(--border-width) dashed var(--border);
-            border-radius: 10px;
+            border-radius: var(--radius-btn);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 1rem;
+            gap: var(--spacing-md);
             cursor: pointer;
             transition: all 0.2s ease;
             background: rgba(15, 23, 42, 0.1);
@@ -157,12 +176,12 @@
             background: var(--primary);
             color: var(--surface);
             border: var(--border-width) solid var(--border);
-            padding: 1rem;
-            border-radius: 8px;
+            padding: var(--spacing-md);
+            border-radius: var(--radius-btn);
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s ease;
-            box-shadow: 3px 3px 0px 0px var(--border);
+            box-shadow: var(--shadow-btn);
         }
 
         .upload-btn:hover {
@@ -311,8 +330,18 @@
             display: flex;
             flex-direction: column;
             max-height: 80vh;
-            box-shadow: 8px 8px 0px 0px var(--border);
+            box-shadow: var(--shadow-card);
         }
+
+        /* Utility Classes for Inline Refactor */
+        .flex-group { display: flex; gap: var(--spacing-md); align-items: center; }
+        .btn-api-doc { cursor: pointer; background: var(--primary-light); border-color: var(--primary); }
+        .text-bold { font-weight: 700; color: var(--text-main); }
+        .text-dimmed { font-size: 0.8rem; color: var(--text-main); opacity: 0.8; }
+        .text-center { text-align: center; padding: 3rem; color: var(--text-bg); }
+        .progress-container { width: 100px; height: 4px; background: rgba(15, 23, 42, 0.2); border-radius: 2px; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--primary); }
+        .file-name-cell { font-weight: 600; }
 
         .modal-header {
             padding: 1.5rem 2rem;
@@ -383,10 +412,9 @@
             <div class="logo-group">
                 <h1>OCR</h1>
             </div>
-            <div style="display: flex; gap: 1rem; align-items: center;">
-                <div class="status-badge" id="apiDocBtn"
-                    style="cursor: pointer; background: var(--primary-light); border-color: var(--primary);">
-                    <span style="color: var(--primary); font-weight: 600;">API DOC</span>
+            <div class="flex-group">
+                <div class="status-badge btn-api-doc" id="apiDocBtn">
+                    <span class="text-bold">API DOC</span>
                 </div>
                 <div class="status-badge">
                     <div class="status-dot" id="healthDot"></div>
@@ -403,8 +431,8 @@
             <div class="upload-zone" id="uploadZone">
                 <div class="upload-icon">↑</div>
                 <div>
-                    <p style="font-weight: 600;">Drop image here</p>
-                    <p style="font-size: 0.8rem; color: var(--text-dim);">PNG, JPG, PDF, TIFF</p>
+                    <p class="text-bold">Drop image here</p>
+                    <p class="text-dimmed">PNG, JPG, PDF, TIFF</p>
                 </div>
                 <input type="file" id="fileInput" hidden accept="image/*,application/pdf">
             </div>
@@ -502,17 +530,16 @@
 
         function renderQueue(files) {
             if (files.length === 0) {
-                queueBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:3rem; color:var(--text-dim);">No tasks found</td></tr>';
+                queueBody.innerHTML = '<tr><td colspan="4" class="text-center">No tasks found</td></tr>';
                 return;
             }
-
             queueBody.innerHTML = files.map(f => `
                 <tr>
-                    <td style="font-weight:500;">${f.filename}</td>
+                    <td class="file-name-cell">${f.filename}</td>
                     <td><span class="status-pill pill-${f.status}">${f.status.replace('_', ' ')}</span></td>
                     <td>
-                        <div style="width:100px; height:4px; background:rgba(15, 23, 42, 0.2); border-radius:2px; overflow:hidden;">
-                            <div style="width:${f.progress}%; height:100%; background:var(--primary);"></div>
+                        <div class="progress-container">
+                            <div class="progress-bar" style="width:${f.progress}%"></div>
                         </div>
                     </td>
                     <td>
