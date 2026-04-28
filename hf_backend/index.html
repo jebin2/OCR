@@ -337,6 +337,13 @@
             box-shadow: var(--shadow-card);
         }
 
+        .status-modal-content {
+            max-width: 400px;
+            text-align: center;
+            padding: var(--spacing-lg);
+        }
+        .status-icon { margin: 0 auto var(--spacing-md); }
+
         /* Utility Classes for Inline Refactor */
         .flex-group {
             display: flex;
@@ -477,7 +484,6 @@
                 </div>
                 <input type="file" id="fileInput" hidden accept="image/*,application/pdf">
             </div>
-            <button class="upload-btn" id="uploadBtn">Process Image</button>
         </div>
 
         <!-- Queue -->
@@ -517,6 +523,15 @@
         </div>
     </div>
 
+    <!-- Status Modal -->
+    <div class="modal" id="statusModal">
+        <div class="modal-content status-modal-content">
+            <div class="upload-icon status-icon">↑</div>
+            <h2 class="card-title" id="statusMessage">Uploading...</h2>
+            <p class="text-dimmed" id="statusSubMessage">Please wait while we process your file.</p>
+        </div>
+    </div>
+
     <script>
         const API_BASE = '/api';
         let filesData = [];
@@ -538,27 +553,36 @@
 
         fileInput.onchange = (e) => handleFile(e.target.files[0]);
 
-        function handleFile(file) {
+        async function handleFile(file) {
             if (!file) return;
-            window.selectedFile = file;
-            uploadZone.querySelector('p').innerText = file.name;
-        }
 
-        document.getElementById('uploadBtn').onclick = async () => {
-            if (!window.selectedFile) return alert('Select a file first');
+            // Show Status Modal
+            const statusModal = document.getElementById('statusModal');
+            const statusMessage = document.getElementById('statusMessage');
+            statusModal.classList.add('active');
+            statusMessage.innerText = "Uploading...";
 
             const formData = new FormData();
-            formData.append('image', window.selectedFile);
+            formData.append('image', file);
 
             try {
                 const res = await fetch(`${API_BASE}/tasks/upload`, { method: 'POST', body: formData });
                 if (res.ok) {
-                    window.selectedFile = null;
-                    uploadZone.querySelector('p').innerText = 'Drop image here';
-                    loadFiles();
+                    statusMessage.innerText = "Success!";
+                    setTimeout(() => {
+                        statusModal.classList.remove('active');
+                        loadFiles();
+                    }, 800);
+                } else {
+                    statusMessage.innerText = "Upload Failed";
+                    setTimeout(() => statusModal.classList.remove('active'), 1500);
                 }
-            } catch (err) { console.error(err); }
-        };
+            } catch (err) {
+                console.error(err);
+                statusMessage.innerText = "Connection Error";
+                setTimeout(() => statusModal.classList.remove('active'), 1500);
+            }
+        }
 
         async function loadFiles() {
             try {
