@@ -25,5 +25,5 @@ RUN mkdir -p uploads temp_dir
 # Expose port
 EXPOSE 7860
 
-# Run only the Flask app (worker starts automatically on first upload)
-CMD ["python", "app.py"]
+# Run the FastAPI app (worker starts automatically on first upload)
+CMD ["python", "run.py"]
