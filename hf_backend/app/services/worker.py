@@ -98,7 +98,7 @@ async def worker_loop():
                     if process.returncode != 0:
                         raise Exception(f"OCR process failed with return code {process.returncode}")
                     
-                    await crud.update_progress(file_id, 95, "Reading results...")
+                    await crud.update_progress(file_id, 98, "Reading results...")
                     
                     output_path = os.path.join(settings.CWD, settings.TEMP_DIR, 'output_ocr.json')
                     with open(output_path, 'r') as file:
