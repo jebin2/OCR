@@ -6,9 +6,9 @@ build-backend = "setuptools.build_meta"
 name = "ocr-runner"
 version = "1.0.0"
 authors = [
-    {name = "Jebin Einstein", email = "jebin@gmail.com"}
+    {name = "Jebin Einstein", email = "jebineinstein@gmail.com"}
 ]
-description = "A flexible, multi-engine OCR runner"
+description = "A flexible, multi-engine OCR"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"

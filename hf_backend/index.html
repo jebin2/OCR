@@ -4,172 +4,241 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OCR Runner</title>
+    <title>OCR</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <style>
+        :root {
+            --bg: #020617;
+            --surface: rgba(30, 41, 59, 0.4);
+            --surface-hover: rgba(30, 41, 59, 0.6);
+            --border: rgba(255, 255, 255, 0.08);
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.4);
+            --success: #10b981;
+            --error: #ef4444;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --glass-blur: blur(12px);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }
-
-        :root {
-            --bg: #0a0e27;
-            --surface: #141b3d;
-            --primary: #00ff88;
-            --secondary: #ff00ff;
-            --accent: #00d4ff;
-            --error: #ff1744;
-            --text: #ffffff;
-            --border: 4px;
+            font-family: 'Inter', sans-serif;
         }
 
         body {
-            font-family: 'Space Grotesk', 'Courier New', monospace;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background:
-                radial-gradient(circle at 20% 50%, rgba(0, 255, 136, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(255, 0, 255, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 40% 20%, rgba(0, 212, 255, 0.1) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 0;
+            background-color: var(--bg);
+            background-image:
+                radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.1) 0%, transparent 40%);
+            color: var(--text-main);
+            height: 100vh;
+            width: 100vw;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            line-height: 1.5;
         }
 
         .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 2rem;
+            width: 90vw;
+            height: 90vh;
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            grid-template-rows: auto 1fr;
+            gap: 1.5rem;
+        }
+
+        /* Bento Cards */
+        .card {
+            background: var(--surface);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
-            z-index: 1;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 3rem;
-            animation: slideDown 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        .card:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
         }
 
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-50px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Header Card */
+        .header-card {
+            grid-column: span 12;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2.5rem;
         }
 
-        h1 {
-            font-size: clamp(2rem, 5vw, 4rem);
-            font-weight: 900;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 50%, var(--secondary) 100%);
+        .logo-group h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #fff, var(--text-dim));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-transform: uppercase;
-            letter-spacing: -2px;
-            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
         }
 
-        .subtitle {
-            font-size: 1.2rem;
-            color: var(--accent);
-            letter-spacing: 2px;
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-dim);
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 999px;
+            border: 1px solid var(--border);
         }
 
-        .upload-section {
-            background: var(--surface);
-            border: var(--border) solid var(--primary);
-            box-shadow: 8px 8px 0 var(--primary);
-            padding: 2rem;
-            margin-bottom: 3rem;
-            animation: slideUp 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.2s both;
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            box-shadow: 0 0 10px var(--success);
         }
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(50px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .upload-section:hover {
-            transform: translate(-2px, -2px);
-            box-shadow: 12px 12px 0 var(--primary);
+        /* Upload Card */
+        .upload-card {
+            grid-column: span 4;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
         }
 
         .upload-zone {
-            border: 3px dashed var(--accent);
-            padding: 3rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: rgba(0, 212, 255, 0.05);
-        }
-
-        .upload-zone:hover {
-            background: rgba(0, 212, 255, 0.1);
-            border-color: var(--primary);
-        }
-
-        .upload-zone.dragging {
-            background: rgba(0, 255, 136, 0.2);
-            border-color: var(--primary);
-            transform: scale(1.02);
-        }
-
-        input[type="file"] {
-            display: none;
-        }
-
-        .btn {
-            background: var(--primary);
-            color: var(--bg);
-            border: var(--border) solid var(--bg);
-            padding: 1rem 2rem;
-            font-size: 1.1rem;
-            font-weight: 900;
-            text-transform: uppercase;
+            flex: 1;
+            border: 2px dashed var(--border);
+            border-radius: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
             cursor: pointer;
             transition: all 0.2s ease;
-            box-shadow: 4px 4px 0 var(--bg);
-            letter-spacing: 1px;
+            background: rgba(255, 255, 255, 0.01);
         }
 
-        .btn:hover:not(:disabled) {
-            transform: translate(-2px, -2px);
-            box-shadow: 6px 6px 0 var(--bg);
+        .upload-zone:hover,
+        .upload-zone.dragging {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
         }
 
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
+        .upload-icon {
+            font-size: 2.5rem;
+            background: rgba(99, 102, 241, 0.1);
+            width: 64px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 1rem;
+            color: var(--primary);
         }
 
-        .btn-secondary {
-            background: var(--accent);
+        .upload-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px var(--primary-glow);
         }
 
-        .btn-small {
-            padding: 0.5rem 1rem;
-            font-size: 0.85rem;
-            box-shadow: 3px 3px 0 var(--bg);
+        .upload-btn:hover {
+            transform: scale(1.02);
+            filter: brightness(1.1);
         }
 
-        .table-section {
-            animation: slideUp 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.4s both;
+        /* Stats Cards */
+        .stat-card {
+            grid-column: span 3;
+            grid-row: span 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
         }
 
-        .table-wrapper {
-            overflow-x: auto;
-            background: var(--surface);
-            border: var(--border) solid var(--secondary);
-            box-shadow: 8px 8px 0 var(--secondary);
+        .stat-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-dim);
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* Queue Card */
+        .queue-card {
+            grid-column: span 8;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .refresh-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            padding: 0.4rem 0.8rem;
+            border-radius: 0.5rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .refresh-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+        }
+
+        /* Table */
+        .table-container {
+            flex: 1;
+            overflow-y: auto;
+            margin-right: -0.5rem;
+            padding-right: 0.5rem;
         }
 
         table {
@@ -177,532 +246,321 @@
             border-collapse: collapse;
         }
 
-        thead {
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-        }
-
         th {
-            padding: 1.5rem 1rem;
             text-align: left;
-            font-weight: 900;
+            padding: 0.75rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-dim);
             text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--bg);
-            border-right: 3px solid var(--bg);
-        }
-
-        th:last-child {
-            border-right: none;
-        }
-
-        tbody tr {
-            border-bottom: 2px solid rgba(0, 212, 255, 0.2);
-            transition: all 0.3s ease;
-        }
-
-        tbody tr:hover {
-            background: rgba(0, 255, 136, 0.1);
+            border-bottom: 1px solid var(--border);
         }
 
         td {
-            padding: 1.5rem 1rem;
+            padding: 1rem 0.5rem;
+            font-size: 0.875rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
         }
 
-        .status {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            border: 3px solid;
-            font-weight: 900;
+        .status-pill {
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
             text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
         }
 
-        .status-not_started { background: var(--bg); border-color: var(--accent); color: var(--accent); }
-        .status-processing { background: var(--bg); border-color: var(--primary); color: var(--primary); animation: pulse 1.5s ease-in-out infinite; }
-        .status-completed { background: var(--primary); border-color: var(--primary); color: var(--bg); }
-        .status-failed { background: var(--error); border-color: var(--error); color: var(--text); }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
+        .pill-not_started {
+            background: rgba(148, 163, 184, 0.1);
+            color: #94a3b8;
         }
 
-        .caption-cell { max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .empty-state { text-align: center; padding: 4rem 2rem; color: var(--accent); font-size: 1.2rem; }
+        .pill-processing {
+            background: rgba(99, 102, 241, 0.15);
+            color: #818cf8;
+        }
 
-        .refresh-btn {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: var(--secondary);
-            border: var(--border) solid var(--bg);
-            box-shadow: 4px 4px 0 var(--bg);
+        .pill-completed {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+        }
+
+        .pill-failed {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+        }
+
+        .btn-view {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 0.4rem;
+            font-size: 0.75rem;
             cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            z-index: 1000;
         }
 
-        .refresh-btn:hover {
-            transform: rotate(180deg) scale(1.1);
-            box-shadow: 6px 6px 0 var(--bg);
-        }
-
-        .loader-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(10, 14, 39, 0.95);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-        }
-
-        .loader {
-            width: 80px;
-            height: 80px;
-            border: 6px solid var(--surface);
-            border-top: 6px solid var(--primary);
-            border-right: 6px solid var(--accent);
-            border-bottom: 6px solid var(--secondary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        .loader-text {
-            position: absolute;
-            margin-top: 120px;
-            font-size: 1.2rem;
-            font-weight: 900;
-            color: var(--primary);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
+        /* Modal */
         .modal {
-            display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(10, 14, 39, 0.95);
-            z-index: 2000;
-            overflow-y: auto;
+            inset: 0;
+            background: rgba(2, 6, 23, 0.8);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            padding: 2rem;
         }
 
         .modal.active {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
         }
 
         .modal-content {
-            background: var(--surface);
-            border: var(--border) solid var(--primary);
-            box-shadow: 12px 12px 0 var(--primary);
-            max-width: 800px;
+            background: #0f172a;
+            border: 1px solid var(--border);
             width: 100%;
-            max-height: 80vh;
+            max-width: 800px;
+            border-radius: 1.5rem;
             display: flex;
             flex-direction: column;
+            max-height: 80vh;
         }
 
         .modal-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 2rem 2rem 1rem 2rem;
-            border-bottom: 3px solid var(--primary);
-            position: sticky;
-            top: 0;
-            z-index: 10;
         }
 
-        .modal-title {
-            font-size: 1.5rem;
-            font-weight: 900;
-            color: var(--primary);
-            text-transform: uppercase;
-        }
-
-        .modal-close {
-            background: var(--error);
-            color: var(--text);
-            border: 3px solid var(--bg);
-            width: 40px;
-            height: 40px;
-            cursor: pointer;
-            font-size: 1.5rem;
-            font-weight: 900;
-            transition: all 0.2s ease;
-            box-shadow: 3px 3px 0 var(--bg);
-        }
-
-        .modal-close:hover {
-            transform: translate(-2px, -2px);
-            box-shadow: 5px 5px 0 var(--bg);
-        }
-
-        .code-block {
-            background: var(--bg);
-            border: 3px solid var(--accent);
-            padding: 1.5rem;
+        .modal-body {
+            padding: 2rem;
             overflow-y: auto;
-            margin: 1.5rem 2rem 2rem 2rem;
-            flex: 1;
         }
 
-        .code-block code {
-            font-family: 'Courier New', monospace;
-            color: var(--primary);
-            font-size: 0.95rem;
-            line-height: 1.6;
+        pre {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            border-radius: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: #34d399;
             white-space: pre-wrap;
             word-break: break-all;
         }
 
-        .copy-btn {
-            position: sticky;
-            top: 0.5rem;
-            float: right;
-            background: var(--accent);
-            color: var(--bg);
-            border: 3px solid var(--bg);
-            padding: 0.5rem 1rem;
-            font-size: 0.8rem;
-            font-weight: 900;
+        .close-modal {
+            background: transparent;
+            border: none;
+            color: var(--text-dim);
+            font-size: 1.5rem;
             cursor: pointer;
-            box-shadow: 3px 3px 0 var(--bg);
-            z-index: 5;
         }
 
-        .copy-btn:hover {
-            transform: translate(-2px, -2px);
-            box-shadow: 4px 4px 0 var(--bg);
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
         }
 
-        .copy-btn.copied { background: var(--primary); }
-
-        @media (max-width: 768px) {
-            .container { padding: 1rem; }
-            th, td { padding: 1rem 0.5rem; font-size: 0.9rem; }
-            .caption-cell { max-width: 100px; }
+        ::-webkit-scrollbar-track {
+            background: transparent;
         }
 
-        .notification {
-            position: fixed;
-            top: 2rem;
-            right: 2rem;
-            padding: 1.5rem 2rem;
-            background: var(--primary);
-            color: var(--bg);
-            border: var(--border) solid var(--bg);
-            box-shadow: 6px 6px 0 var(--bg);
-            font-weight: 900;
-            z-index: 2000;
-            animation: slideInRight 0.5s ease, slideOutRight 0.5s ease 3.5s;
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 10px;
         }
 
-        @keyframes slideInRight {
-            from { transform: translateX(400px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
 
-        @keyframes slideOutRight {
-            to { transform: translateX(400px); opacity: 0; }
+            .card {
+                grid-column: span 12 !important;
+            }
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <header>
-            <h1>OCR Runner</h1>
-            <p class="subtitle">Extract Text from Images</p>
+        <!-- Header -->
+        <header class="card header-card">
+            <div class="logo-group">
+                <h1>OCR</h1>
+            </div>
+            <div class="status-badge">
+                <div class="status-dot" id="healthDot"></div>
+                <span id="healthText">Service Online</span>
+            </div>
         </header>
 
-        <div class="upload-section">
-            <h2 style="margin-bottom: 1.5rem; color: var(--primary);">Upload Image</h2>
-            <div class="upload-zone" id="uploadZone">
-                <p style="font-size: 1.2rem; margin-bottom: 1rem;">📁 Drop image here or click to browse</p>
-                <p style="color: var(--accent); font-size: 0.9rem;">Supported: PNG, JPG, JPEG, BMP, TIFF, WebP, GIF, PDF</p>
-                <input type="file" id="imageFile" accept=".png,.jpg,.jpeg,.bmp,.tiff,.tif,.webp,.gif,.pdf">
+        <!-- Upload -->
+        <div class="card upload-card">
+            <div class="card-header">
+                <span class="card-title">Input</span>
             </div>
-            <button class="btn" id="uploadBtn" style="margin-top: 1.5rem; width: 100%;">
-                🚀 Upload & Process
-            </button>
+            <div class="upload-zone" id="uploadZone">
+                <div class="upload-icon">↑</div>
+                <div>
+                    <p style="font-weight: 600;">Drop image here</p>
+                    <p style="font-size: 0.8rem; color: var(--text-dim);">PNG, JPG, PDF, TIFF</p>
+                </div>
+                <input type="file" id="fileInput" hidden accept="image/*,application/pdf">
+            </div>
+            <button class="upload-btn" id="uploadBtn">Process Image</button>
         </div>
 
-        <div class="table-section">
-            <h2 style="margin-bottom: 1.5rem; color: var(--secondary);">Processing Queue</h2>
-            <div class="table-wrapper">
+        <!-- Queue -->
+        <div class="card queue-card">
+            <div class="card-header">
+                <span class="card-title">Recent Activity</span>
+                <button class="refresh-btn" onclick="loadFiles()">Refresh</button>
+            </div>
+            <div class="table-container">
                 <table>
                     <thead>
                         <tr>
-                            <th>Filename</th>
+                            <th>File</th>
                             <th>Status</th>
-                            <th>Est. Wait</th>
-                            <th>Text</th>
-                            <th>Created</th>
-                            <th>Processed</th>
+                            <th>Progress</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody id="filesTable">
-                        <tr>
-                            <td colspan="6" class="empty-state">No files uploaded yet. Start by uploading an image!</td>
-                        </tr>
+                    <tbody id="queueBody">
+                        <!-- Data injected here -->
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    <button class="refresh-btn" id="refreshBtn" title="Refresh">🔄</button>
-
-    <div class="loader-overlay" id="loader">
-        <div>
-            <div class="loader"></div>
-            <div class="loader-text">Uploading...</div>
-        </div>
-    </div>
-
-    <div class="modal" id="textModal">
+    <!-- Modal -->
+    <div class="modal" id="resultModal">
         <div class="modal-content">
             <div class="modal-header">
-                <div class="modal-title">📄 OCR Text</div>
-                <button class="modal-close" onclick="closeModal()">×</button>
+                <span class="card-title">Extracted Content</span>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
             </div>
-            <div class="code-block">
-                <button class="copy-btn" onclick="copyText()">📋 Copy</button>
-                <code id="textCode"></code>
+            <div class="modal-body">
+                <pre id="resultText"></pre>
             </div>
         </div>
     </div>
 
     <script>
-        const API_URL = '/api';
-        let selectedFile = null;
-        const textStore = new Map();
+        const API_BASE = '/api';
+        let filesData = [];
 
+        // Elements
         const uploadZone = document.getElementById('uploadZone');
-        const fileInput = document.getElementById('imageFile');
-        const loader = document.getElementById('loader');
-        const uploadBtn = document.getElementById('uploadBtn');
+        const fileInput = document.getElementById('fileInput');
+        const queueBody = document.getElementById('queueBody');
 
-        uploadZone.addEventListener('click', () => fileInput.click());
-
-        uploadZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadZone.classList.add('dragging');
-        });
-
-        uploadZone.addEventListener('dragleave', () => {
-            uploadZone.classList.remove('dragging');
-        });
-
-        uploadZone.addEventListener('drop', (e) => {
+        // Drag & Drop
+        uploadZone.onclick = () => fileInput.click();
+        uploadZone.ondragover = (e) => { e.preventDefault(); uploadZone.classList.add('dragging'); };
+        uploadZone.ondragleave = () => uploadZone.classList.remove('dragging');
+        uploadZone.ondrop = (e) => {
             e.preventDefault();
             uploadZone.classList.remove('dragging');
-            const file = e.dataTransfer.files[0];
-            if (file) {
-                fileInput.files = e.dataTransfer.files;
-                selectedFile = file;
-                showNotification(`Selected: ${file.name}`);
-            }
-        });
+            handleFile(e.dataTransfer.files[0]);
+        };
 
-        fileInput.addEventListener('change', (e) => {
-            selectedFile = e.target.files[0];
-            if (selectedFile) {
-                showNotification(`Selected: ${selectedFile.name}`);
-                if (pendingUpload) {
-                    pendingUpload = false;
-                    uploadFile();
-                }
-            }
-        });
+        fileInput.onchange = (e) => handleFile(e.target.files[0]);
 
-        let pendingUpload = false;
-
-        async function uploadFile() {
-            if (!selectedFile) return;
-
-            const formData = new FormData();
-            formData.append('image', selectedFile);
-
-            loader.style.display = 'flex';
-            uploadBtn.disabled = true;
-
-            try {
-                const response = await fetch(`${API_URL}/upload`, {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    showNotification('File uploaded successfully! 🎉');
-                    selectedFile = null;
-                    fileInput.value = '';
-                    loadFiles();
-                } else {
-                    showNotification(data.error || 'Upload failed', 'error');
-                }
-            } catch (error) {
-                showNotification('Network error: ' + error.message, 'error');
-            } finally {
-                loader.style.display = 'none';
-                uploadBtn.disabled = false;
-            }
+        function handleFile(file) {
+            if (!file) return;
+            window.selectedFile = file;
+            uploadZone.querySelector('p').innerText = file.name;
         }
 
-        uploadBtn.addEventListener('click', async () => {
-            if (!selectedFile) {
-                pendingUpload = true;
-                fileInput.click();
-                return;
-            }
-            uploadFile();
-        });
+        document.getElementById('uploadBtn').onclick = async () => {
+            if (!window.selectedFile) return alert('Select a file first');
+
+            const formData = new FormData();
+            formData.append('image', window.selectedFile);
+
+            try {
+                const res = await fetch(`${API_BASE}/upload`, { method: 'POST', body: formData });
+                if (res.ok) {
+                    window.selectedFile = null;
+                    uploadZone.querySelector('p').innerText = 'Drop image here';
+                    loadFiles();
+                }
+            } catch (err) { console.error(err); }
+        };
 
         async function loadFiles() {
             try {
-                const response = await fetch(`${API_URL}/files`);
-                const files = await response.json();
-
-                const tbody = document.getElementById('filesTable');
-                textStore.clear();
-
-                if (files.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No files uploaded yet. Start by uploading an image!</td></tr>';
-                    return;
-                }
-
-                tbody.innerHTML = files.map(file => {
-                    if (file.ocr_text) {
-                        textStore.set(file.id, file.ocr_text);
-                    }
-
-                    const textPreview = file.ocr_text ?
-                        (file.ocr_text.length > 50 ? file.ocr_text.substring(0, 50) + '...' : file.ocr_text) :
-                        '—';
-
-                    let estWait = '—';
-                    if (file.status === 'not_started' && file.estimated_start_seconds !== null) {
-                        const seconds = file.estimated_start_seconds;
-                        if (seconds < 60) {
-                            estWait = `${seconds}s`;
-                        } else if (seconds < 3600) {
-                            const mins = Math.floor(seconds / 60);
-                            const secs = seconds % 60;
-                            estWait = secs > 0 ? `${mins}m ${secs}s` : `${mins}m`;
-                        } else {
-                            const hours = Math.floor(seconds / 3600);
-                            const mins = Math.floor((seconds % 3600) / 60);
-                            estWait = mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
-                        }
-                        if (file.queue_position) {
-                            estWait = `#${file.queue_position} (${estWait})`;
-                        }
-                    } else if (file.status === 'processing') {
-                        estWait = '⏳ Processing...';
-                    }
-
-                    return `
-                    <tr>
-                        <td><strong>${file.filename}</strong></td>
-                        <td><span class="status status-${file.status}">${file.status.replace('_', ' ')}</span></td>
-                        <td>${estWait}</td>
-                        <td class="caption-cell">
-                            ${file.ocr_text ?
-                            `<button class="btn btn-small btn-secondary" onclick="showText('${file.id}')" style="margin-left: 0.5rem;">Show</button>`
-                            : '—'}
-                        </td>
-                        <td>${new Date(file.created_at).toLocaleString()}</td>
-                        <td>${file.processed_at ? new Date(file.processed_at).toLocaleString() : '—'}</td>
-                    </tr>
-                `;
-                }).join('');
-            } catch (error) {
-                console.error('Error loading files:', error);
-            }
+                const res = await fetch(`${API_BASE}/files`);
+                const data = await res.json();
+                filesData = data;
+                renderQueue(data);
+            } catch (err) { console.error(err); }
         }
 
-        function showText(fileId) {
-            const text = textStore.get(fileId);
-            if (!text) return;
-
-            const modal = document.getElementById('textModal');
-            const codeBlock = document.getElementById('textCode');
-
-            let formattedText = text;
-            try {
-                const parsed = JSON.parse(text);
-                formattedText = JSON.stringify(parsed, null, 2);
-            } catch (e) {
-                formattedText = text;
+        function renderQueue(files) {
+            if (files.length === 0) {
+                queueBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:3rem; color:var(--text-dim);">No tasks found</td></tr>';
+                return;
             }
 
-            codeBlock.textContent = formattedText;
-            modal.classList.add('active');
+            queueBody.innerHTML = files.map(f => `
+                <tr>
+                    <td style="font-weight:500;">${f.filename}</td>
+                    <td><span class="status-pill pill-${f.status}">${f.status.replace('_', ' ')}</span></td>
+                    <td>
+                        <div style="width:100px; height:4px; background:rgba(255,255,255,0.05); border-radius:2px; overflow:hidden;">
+                            <div style="width:${f.progress}%; height:100%; background:var(--primary);"></div>
+                        </div>
+                    </td>
+                    <td>
+                        ${f.status === 'completed' ? `<button class="btn-view" onclick="showResult('${f.id}')">View</button>` : '—'}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+
+        async function showResult(id) {
+            const res = await fetch(`${API_BASE}/files/${id}`);
+            const data = await res.json();
+            const text = data.ocr_text;
+
+            let formatted = text;
+            try {
+                const parsed = JSON.parse(text);
+                formatted = JSON.stringify(parsed, null, 2);
+            } catch (e) { }
+
+            document.getElementById('resultText').innerText = formatted;
+            document.getElementById('resultModal').classList.add('active');
         }
 
         function closeModal() {
-            document.getElementById('textModal').classList.remove('active');
+            document.getElementById('resultModal').classList.remove('active');
         }
 
-        function copyText() {
-            const codeBlock = document.getElementById('textCode');
-            const copyBtn = event.target;
-
-            navigator.clipboard.writeText(codeBlock.textContent).then(() => {
-                const originalText = copyBtn.textContent;
-                copyBtn.textContent = '✓ Copied!';
-                copyBtn.classList.add('copied');
-
-                setTimeout(() => {
-                    copyBtn.textContent = originalText;
-                    copyBtn.classList.remove('copied');
-                }, 2000);
-            });
+        // Health Check
+        async function checkHealth() {
+            try {
+                const res = await fetch('/health');
+                const data = await res.json();
+                const dot = document.getElementById('healthDot');
+                dot.style.background = data.status === 'healthy' ? 'var(--success)' : 'var(--error)';
+                dot.style.boxShadow = `0 0 10px ${data.status === 'healthy' ? 'var(--success)' : 'var(--error)'}`;
+            } catch (e) { }
         }
 
-        document.getElementById('textModal').addEventListener('click', (e) => {
-            if (e.target.id === 'textModal') closeModal();
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeModal();
-        });
-
-        document.getElementById('refreshBtn').addEventListener('click', loadFiles);
-        setInterval(loadFiles, 1000 * 60 * 10);
-
-        function showNotification(message, type = 'success') {
-            const notification = document.createElement('div');
-            notification.className = 'notification';
-            notification.textContent = message;
-            if (type === 'error') notification.style.background = 'var(--error)';
-            document.body.appendChild(notification);
-            setTimeout(() => notification.remove(), 4000);
-        }
-
+        // Init
         loadFiles();
+        setInterval(loadFiles, 5000);
+        setInterval(checkHealth, 10000);
     </script>
 </body>
 
