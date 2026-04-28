@@ -174,7 +174,7 @@
 
         .upload-btn {
             background: var(--primary);
-            color: var(--surface);
+            color: var(--text-main);
             border: var(--border-width) solid var(--border);
             padding: var(--spacing-md);
             border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
@@ -212,20 +212,22 @@
         }
 
         .refresh-btn {
-            background: transparent;
+            background: var(--primary);
             border: var(--border-width) solid var(--border);
             color: var(--text-main);
-            padding: 0.4rem 0.8rem;
-            border-radius: 8px;
+            padding: 0.4rem 1.2rem;
+            border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
             font-size: 0.8rem;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s;
+            box-shadow: 2px 2px 0px 0px var(--border);
         }
 
         .refresh-btn:hover {
-            background: rgba(253, 230, 210, 0.1);
-            color: var(--text-main);
+            transform: translate(-1px, -1px);
+            box-shadow: 4px 4px 0px 0px var(--border);
+            opacity: 0.95;
         }
 
         /* Table */
@@ -289,20 +291,22 @@
         }
 
         .btn-view {
-            background: var(--surface);
+            background: var(--primary);
             border: 2px solid var(--border);
             color: var(--text-main);
-            padding: 0.3rem 0.6rem;
-            border-radius: 4px;
+            padding: 0.3rem 1rem;
+            border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
             font-size: 0.75rem;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s;
+            box-shadow: 2px 2px 0px 0px var(--border);
         }
 
         .btn-view:hover {
-            background: rgba(253, 230, 210, 0.1);
-            color: var(--text-main);
+            transform: translate(-1px, -1px);
+            box-shadow: 4px 4px 0px 0px var(--border);
+            opacity: 0.95;
         }
 
         /* Modal */
@@ -334,14 +338,51 @@
         }
 
         /* Utility Classes for Inline Refactor */
-        .flex-group { display: flex; gap: var(--spacing-md); align-items: center; }
-        .btn-api-doc { cursor: pointer; background: var(--primary-light); border-color: var(--primary); }
-        .text-bold { font-weight: 700; color: var(--text-main); }
-        .text-dimmed { font-size: 0.8rem; color: var(--text-main); opacity: 0.8; }
-        .text-center { text-align: center; padding: 3rem; color: var(--text-bg); }
-        .progress-container { width: 100px; height: 4px; background: rgba(253, 230, 210, 0.1); border-radius: 2px; overflow: hidden; }
-        .progress-bar { height: 100%; background: var(--text-main); }
-        .file-name-cell { font-weight: 600; }
+        .flex-group {
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: center;
+        }
+
+        .btn-api-doc {
+            cursor: pointer;
+            background: var(--primary-light);
+            border-color: var(--primary);
+        }
+
+        .text-bold {
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .text-dimmed {
+            font-size: 0.8rem;
+            color: var(--text-main);
+            opacity: 0.8;
+        }
+
+        .text-center {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-bg);
+        }
+
+        .progress-container {
+            width: 100px;
+            height: 4px;
+            background: rgba(253, 230, 210, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--text-main);
+        }
+
+        .file-name-cell {
+            font-weight: 600;
+        }
 
         .modal-header {
             padding: 1.5rem 2rem;
