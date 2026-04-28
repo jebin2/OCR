@@ -11,12 +11,10 @@ authors = [
 description = "A flexible, multi-engine OCR runner"
 readme = "README.md"
 requires-python = ">=3.10"
-license = {text = "MIT"}
+license = "MIT"
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
-    "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
 
 dependencies = [
@@ -27,6 +25,10 @@ dependencies = [
     "psutil",
     "pdf2image",
 ]
+
+[tool.setuptools.packages.find]
+include = ["ocr*"]
+exclude = ["hf_backend*"]
 
 [project.optional-dependencies]
 paddleocr = [
