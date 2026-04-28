@@ -189,7 +189,6 @@
         }
 
         .modal-content {
-            background: #e6f0fd;
             border: 4px solid #2563eb;
             width: 100%;
             max-width: 900px;
@@ -205,7 +204,7 @@
             position: absolute;
             inset: -8px;
             border: 6px solid #2563eb;
-            background: #e6f0fd;
+            backdrop-filter: blur(10px);
             border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
             z-index: -1;
             filter: url('#crayon-texture');
@@ -231,7 +230,6 @@
 
         #resultText,
         pre {
-            background: rgba(230, 240, 253, 0.9) !important;
             border: 3px dashed #adc6ff !important;
             padding: 2rem !important;
             border-radius: 20px !important;
@@ -364,11 +362,14 @@
             class="material-symbols-outlined absolute text-[100px] text-crayon-blue top-[60%] right-[25%] opacity-15 drift-slow">cloud</span>
         <span
             class="material-symbols-outlined absolute text-[150px] text-crayon-purple top-[30%] right-[5%] opacity-10 drift-medium">cloud</span>
-        
+
         <!-- Hearts -->
-        <span class="material-symbols-outlined absolute text-4xl text-crayon-red top-[25%] left-[18%] rotate-[-15deg] crayon-filter animate-pulse">favorite</span>
-        <span class="material-symbols-outlined absolute text-2xl text-crayon-red bottom-[10%] right-[20%] rotate-12 crayon-filter">favorite</span>
-        <span class="material-symbols-outlined absolute text-5xl text-crayon-red top-[70%] left-[8%] rotate-[10deg] animate-pulse">favorite</span>
+        <span
+            class="material-symbols-outlined absolute text-4xl text-crayon-red top-[25%] left-[18%] rotate-[-15deg] crayon-filter animate-pulse">favorite</span>
+        <span
+            class="material-symbols-outlined absolute text-2xl text-crayon-red bottom-[10%] right-[20%] rotate-12 crayon-filter">favorite</span>
+        <span
+            class="material-symbols-outlined absolute text-5xl text-crayon-red top-[70%] left-[8%] rotate-[10deg] animate-pulse">favorite</span>
     </div>
 
     <!-- SVG Filters -->
@@ -507,7 +508,7 @@
 
             <!-- List Header -->
             <div class="flex w-full px-6 pb-4 border-b-[5px] text-[#4c1d95] font-bold text-xl uppercase tracking-wider"
-                 style="border-color: rgba(124, 58, 237, 0.4); border-radius: 20px 15px 25px 18px / 18px 25px 15px 20px; filter: url(#crayon-texture);">
+                style="border-color: rgba(124, 58, 237, 0.4); border-radius: 20px 15px 25px 18px / 18px 25px 15px 20px; filter: url(#crayon-texture);">
                 <div class="w-1/2">FILE NAME</div>
                 <div class="w-1/6 text-center">STATUS</div>
                 <div class="w-1/4 text-center">PROGRESS</div>
