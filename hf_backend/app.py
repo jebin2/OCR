@@ -45,11 +45,15 @@ def allowed_file(filename):
 def start_worker():
     global worker_thread, worker_running
     
+    print(f"start_worker called: worker_running={worker_running}")
+    
     if not worker_running:
         worker_running = True
         worker_thread = threading.Thread(target=worker_loop, daemon=True)
         worker_thread.start()
         print("Worker thread started")
+    else:
+        print("Worker already running")
 
 def cleanup_old_entries():
     from datetime import timedelta
@@ -101,6 +105,7 @@ def worker_loop():
     import json
     
     while worker_running:
+        print(f"Worker loop iteration, checking for files...")
         cleanup_old_entries()
         try:
             conn = sqlite3.connect('ocr_results.db')
