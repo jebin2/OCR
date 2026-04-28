@@ -168,4 +168,5 @@ temp_dir
 models
 ocr_results.db
 audio_captions.db
+database.db
 uploads/
