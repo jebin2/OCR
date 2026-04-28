@@ -35,9 +35,9 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          git clone https://huggingface.co/spaces/jebin2/ocr hf-space
+          git clone https://huggingface.co/spaces/jebin2/OCR hf-space
           cd hf-space
-          git remote set-url origin https://jebin2:$HF_TOKEN@huggingface.co/spaces/jebin2/ocr
+          git remote set-url origin https://jebin2:$HF_TOKEN@huggingface.co/spaces/jebin2/OCR
 
       - name: Copy hf_backend files to HF Space
         run: |
@@ -111,5 +111,5 @@ jobs:
       - name: Deployment Summary
         run: |
           echo "🚀 Deployment completed!"
-          echo "📍 Space URL: https://huggingface.co/spaces/jebin2/ocr"
+          echo "📍 Space URL: https://huggingface.co/spaces/jebin2/OCR"
           echo "📝 Commit SHA: ${{ github.sha }}"
