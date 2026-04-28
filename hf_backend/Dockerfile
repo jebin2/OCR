@@ -1,13 +1,29 @@
 FROM python:3.10-slim
 
+# Set working directory
 WORKDIR /app
 
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements first for better caching
+COPY requirements.txt .
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application files
 COPY . .
 
-RUN pip install --no-cache-dir -r hf_backend/requirements.txt
+# Create necessary directories
+RUN mkdir -p uploads temp_dir
 
-RUN pip install --no-cache-dir -e .
-
+# Expose port
 EXPOSE 7860
 
-CMD ["gunicorn", "--bind", "0.0.0.0:7860", "--workers", "2", "hf_backend.app:app"]
+# Run only the Flask app (worker starts automatically on first upload)
+CMD ["python", "app.py"]
