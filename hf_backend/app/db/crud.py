@@ -4,40 +4,40 @@ from datetime import datetime, timedelta
 from app.core.config import settings
 from custom_logger import logger_config as logger
 
-async def insert_file(file_id: str, filename: str, filepath: str, status: str, hide_from_ui: int):
+async def insert_task(task_id: str, filename: str, filepath: str, status: str, hide_from_ui: int):
     async with aiosqlite.connect(settings.DATABASE_FILE) as db:
         await db.execute('''INSERT INTO image_files 
                      (id, filename, filepath, status, created_at, hide_from_ui)
                      VALUES (?, ?, ?, ?, ?, ?)''',
-                  (file_id, filename, filepath, status, datetime.now().isoformat(), hide_from_ui))
+                  (task_id, filename, filepath, status, datetime.now().isoformat(), hide_from_ui))
         await db.commit()
-    logger.debug(f"Inserted file {filename} (ID: {file_id}) into database.")
+    logger.debug(f"Inserted task {filename} (ID: {task_id}) into database.")
 
-async def update_status(file_id: str, status: str, result: str = None, error: str = None):
+async def update_status(task_id: str, status: str, result: str = None, error: str = None):
     async with aiosqlite.connect(settings.DATABASE_FILE) as db:
         if status == 'completed':
             await db.execute('''UPDATE image_files 
                          SET status = ?, result = ?, processed_at = ?, progress = 100, progress_text = 'Completed'
                          WHERE id = ?''',
-                      (status, result, datetime.now().isoformat(), file_id))
-            logger.info(f"File ID {file_id} marked as completed.")
+                      (status, result, datetime.now().isoformat(), task_id))
+            logger.info(f"Task ID {task_id} marked as completed.")
         elif status == 'failed':
             await db.execute('''UPDATE image_files 
                          SET status = ?, result = ?, processed_at = ?, progress_text = 'Failed'
                          WHERE id = ?''',
-                      (status, f"Error: {error}", datetime.now().isoformat(), file_id))
-            logger.error(f"File ID {file_id} marked as failed. Error: {error}")
+                      (status, f"Error: {error}", datetime.now().isoformat(), task_id))
+            logger.error(f"Task ID {task_id} marked as failed. Error: {error}")
         else:
-            await db.execute('UPDATE image_files SET status = ? WHERE id = ?', (status, file_id))
-            logger.debug(f"File ID {file_id} status updated to {status}.")
+            await db.execute('UPDATE image_files SET status = ? WHERE id = ?', (status, task_id))
+            logger.debug(f"Task ID {task_id} status updated to {status}.")
         await db.commit()
 
-async def update_progress(file_id: str, progress: int, progress_text: str = None):
+async def update_progress(task_id: str, progress: int, progress_text: str = None):
     async with aiosqlite.connect(settings.DATABASE_FILE) as db:
         await db.execute('UPDATE image_files SET progress = ?, progress_text = ? WHERE id = ?',
-                  (progress, progress_text, file_id))
+                  (progress, progress_text, task_id))
         await db.commit()
-    logger.debug(f"File ID {file_id} progress updated to {progress}% ({progress_text}).")
+    logger.debug(f"Task ID {task_id} progress updated to {progress}% ({progress_text}).")
 
 async def get_next_not_started():
     async with aiosqlite.connect(settings.DATABASE_FILE) as db:
@@ -106,7 +106,7 @@ async def get_average_processing_time():
         
         return total_seconds / count if count > 0 else 30.0
 
-async def get_all_files():
+async def get_all_tasks():
     async with aiosqlite.connect(settings.DATABASE_FILE) as db:
         db.row_factory = aiosqlite.Row
         
@@ -126,10 +126,10 @@ async def get_all_files():
             
         return rows, queue_ids, processing_count, avg_time
 
-async def get_file_by_id(file_id: str):
+async def get_task_by_id(task_id: str):
     async with aiosqlite.connect(settings.DATABASE_FILE) as db:
         db.row_factory = aiosqlite.Row
-        async with db.execute('SELECT * FROM image_files WHERE id = ?', (file_id,)) as cursor:
+        async with db.execute('SELECT * FROM image_files WHERE id = ?', (task_id,)) as cursor:
             row = await cursor.fetchone()
             
         if not row:
@@ -151,7 +151,7 @@ async def get_file_by_id(file_id: str):
                 count_row = await cursor.fetchone()
                 processing_count = count_row['count']
             
-            files_ahead = queue_position - 1 + processing_count
-            estimated_start_seconds = round(files_ahead * avg_time)
+            tasks_ahead = queue_position - 1 + processing_count
+            estimated_start_seconds = round(tasks_ahead * avg_time)
             
         return row, queue_position, estimated_start_seconds

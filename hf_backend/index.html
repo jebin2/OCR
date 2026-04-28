@@ -438,6 +438,24 @@
             border-radius: 10px;
         }
 
+        .copy-btn {
+            background: var(--primary);
+            color: var(--text-main);
+            border: 2px solid var(--border);
+            padding: 0.2rem 0.8rem;
+            border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 2px 2px 0 var(--border);
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            transform: translate(-1px, -1px);
+            box-shadow: 3px 3px 0 var(--border);
+        }
+
         @media (max-width: 900px) {
             .container {
                 grid-template-columns: 1fr;
@@ -490,13 +508,13 @@
         <div class="card queue-card">
             <div class="card-header">
                 <span class="card-title">Recent Activity</span>
-                <button class="refresh-btn" onclick="loadFiles()">Refresh</button>
+                <button class="refresh-btn" onclick="loadTasks()">Refresh</button>
             </div>
             <div class="table-container">
                 <table>
                     <thead>
                         <tr>
-                            <th>Filename</th>
+                            <th>Task</th>
                             <th>Status</th>
                             <th>Progress</th>
                             <th>Est. Wait</th>
@@ -515,7 +533,10 @@
     <div class="modal" id="resultModal">
         <div class="modal-content">
             <div class="modal-header">
-                <span class="card-title">Extracted Content</span>
+                <div style="display:flex; align-items:center; gap:1rem;">
+                    <span class="card-title">Extracted Content</span>
+                    <button class="copy-btn" id="copyBtn" onclick="copyResult()">📋 Copy</button>
+                </div>
                 <button class="close-modal" onclick="closeModal()">&times;</button>
             </div>
             <div class="modal-body">
@@ -535,7 +556,7 @@
 
     <script>
         const API_BASE = '/api';
-        let filesData = [];
+        let tasksData = [];
 
         // Elements
         const uploadZone = document.getElementById('uploadZone');
@@ -572,7 +593,7 @@
                     statusMessage.innerText = "Success!";
                     setTimeout(() => {
                         statusModal.classList.remove('active');
-                        loadFiles();
+                        loadTasks();
                     }, 800);
                 } else {
                     statusMessage.innerText = "Upload Failed";
@@ -585,11 +606,11 @@
             }
         }
 
-        async function loadFiles() {
+        async function loadTasks() {
             try {
                 const res = await fetch(`${API_BASE}/tasks`);
                 const data = await res.json();
-                filesData = data;
+                tasksData = data;
                 renderQueue(data);
             } catch (err) { console.error(err); }
         }
@@ -648,6 +669,16 @@
             document.getElementById('resultModal').classList.remove('active');
         }
 
+        function copyResult() {
+            const text = document.getElementById('resultText').innerText;
+            const btn = document.getElementById('copyBtn');
+            navigator.clipboard.writeText(text).then(() => {
+                const orig = btn.innerText;
+                btn.innerText = '✓ Copied!';
+                setTimeout(() => { btn.innerText = orig; }, 2000);
+            });
+        }
+
         document.getElementById('apiDocBtn').onclick = () => {
             const doc = {
                 "base_url": window.location.origin,
@@ -693,8 +724,8 @@
         }
 
         // Init
-        loadFiles();
-        setInterval(loadFiles, 5000);
+        loadTasks();
+        setInterval(loadTasks, 5000);
         setInterval(checkHealth, 10000);
     </script>
 </body>

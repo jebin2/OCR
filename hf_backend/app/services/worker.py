@@ -37,16 +37,16 @@ async def worker_loop():
             row = await crud.get_next_not_started()
             
             if row:
-                file_id = row['id']
+                task_id = row['id']
                 filepath = row['filepath']
                 filename = row['filename']
                 
-                logger.info(f"\n{'='*60}\nProcessing: {filename}\nID: {file_id}\n{'='*60}")
+                logger.info(f"\n{'='*60}\nProcessing: {filename}\nID: {task_id}\n{'='*60}")
                 
-                await crud.update_status(file_id, 'processing')
+                await crud.update_status(task_id, 'processing')
                 
                 try:
-                    await crud.update_progress(file_id, 10, "Starting OCR...")
+                    await crud.update_progress(task_id, 10, "Starting OCR...")
                     
                     command = f"cd {settings.CWD} && {settings.PYTHON_PATH} --input {shlex.quote(os.path.abspath(filepath))} --model {settings.OCR_MODEL_NAME}"
                     
@@ -78,27 +78,27 @@ async def worker_loop():
                             if percent_match:
                                 try:
                                     percent = int(percent_match.group(1))
-                                    await crud.update_progress(file_id, min(percent, 90), "Processing...")
+                                    await crud.update_progress(task_id, min(percent, 90), "Processing...")
                                 except: pass
                             
                             if 'initializing paddleocr' in line_str.lower():
-                                await crud.update_progress(file_id, 15, "Initializing engine...")
+                                await crud.update_progress(task_id, 15, "Initializing engine...")
                             elif 'loading model' in line_str.lower():
-                                await crud.update_progress(file_id, 25, "Loading OCR models...")
+                                await crud.update_progress(task_id, 25, "Loading OCR models...")
                             elif 'model loaded successfully' in line_str.lower():
-                                await crud.update_progress(file_id, 40, "Models ready.")
+                                await crud.update_progress(task_id, 40, "Models ready.")
                             elif 'processing:' in line_str.lower():
-                                await crud.update_progress(file_id, 50, "Analyzing image...")
+                                await crud.update_progress(task_id, 50, "Analyzing image...")
                             elif 'ocr completed successfully' in line_str.lower():
-                                await crud.update_progress(file_id, 90, "OCR completed.")
+                                await crud.update_progress(task_id, 90, "OCR completed.")
                             elif 'json ocr saved' in line_str.lower():
-                                await crud.update_progress(file_id, 95, "Saving data...")
+                                await crud.update_progress(task_id, 95, "Saving data...")
                     
                     await process.wait()
                     if process.returncode != 0:
                         raise Exception(f"OCR process failed with return code {process.returncode}")
                     
-                    await crud.update_progress(file_id, 98, "Reading results...")
+                    await crud.update_progress(task_id, 98, "Reading results...")
                     
                     output_path = os.path.join(settings.CWD, settings.TEMP_DIR, 'output_ocr.json')
                     with open(output_path, 'r') as file:
@@ -109,7 +109,7 @@ async def worker_loop():
                     logger.success(f"Successfully processed: {filename}")
                     logger.info(f"Text preview: {result_data[:100]}...")
                     
-                    await crud.update_status(file_id, 'completed', result=json.dumps(result))
+                    await crud.update_status(task_id, 'completed', result=json.dumps(result))
                     
                     if os.path.exists(filepath):
                         os.remove(filepath)
@@ -117,7 +117,7 @@ async def worker_loop():
                     
                 except Exception as e:
                     logger.error(f"Failed to process {filename}: {str(e)}")
-                    await crud.update_status(file_id, 'failed', error=str(e))
+                    await crud.update_status(task_id, 'failed', error=str(e))
                     
             else:
                 await asyncio.sleep(settings.POLL_INTERVAL)

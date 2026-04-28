@@ -18,16 +18,16 @@ async def index():
     return FileResponse('index.html')
 
 @router.post("/api/tasks/upload")
-async def upload_image(image: UploadFile = File(...), hide_from_ui: str = Form("")):
+async def upload_task(image: UploadFile = File(...), hide_from_ui: str = Form("")):
     if not image.filename:
         raise HTTPException(status_code=400, detail="No file selected")
     
     if not allowed_file(image.filename):
         raise HTTPException(status_code=400, detail="Invalid file type")
     
-    file_id = str(uuid.uuid4())
+    task_id = str(uuid.uuid4())
     filename = image.filename
-    filepath = os.path.join(settings.UPLOAD_FOLDER, f"{file_id}_{filename}")
+    filepath = os.path.join(settings.UPLOAD_FOLDER, f"{task_id}_{filename}")
     
     try:
         async with aiofiles.open(filepath, 'wb') as out_file:
@@ -40,32 +40,32 @@ async def upload_image(image: UploadFile = File(...), hide_from_ui: str = Form("
     
     hide_from_ui_val = 1 if hide_from_ui.lower() in ['true', '1'] else 0
     
-    await crud.insert_file(file_id, filename, filepath, 'not_started', hide_from_ui_val)
+    await crud.insert_task(task_id, filename, filepath, 'not_started', hide_from_ui_val)
     
     await start_worker()
     
     return JSONResponse(status_code=201, content={
-        'id': file_id,
+        'id': task_id,
         'filename': filename,
         'status': 'not_started',
         'message': 'File uploaded successfully'
     })
 
 @router.get("/api/tasks")
-async def get_files():
-    rows, queue_ids, processing_count, avg_time = await crud.get_all_files()
+async def get_tasks():
+    rows, queue_ids, processing_count, avg_time = await crud.get_all_tasks()
     
-    files = []
+    tasks = []
     for row in rows:
         queue_position = None
         estimated_start_seconds = None
         
         if row['status'] == 'not_started' and row['id'] in queue_ids:
             queue_position = queue_ids.index(row['id']) + 1
-            files_ahead = queue_position - 1 + processing_count
-            estimated_start_seconds = round(files_ahead * avg_time)
+            tasks_ahead = queue_position - 1 + processing_count
+            estimated_start_seconds = round(tasks_ahead * avg_time)
         
-        files.append({
+        tasks.append({
             'id': row['id'],
             'filename': row['filename'],
             'status': row['status'],
@@ -78,11 +78,11 @@ async def get_files():
             'estimated_start_seconds': estimated_start_seconds
         })
     
-    return files
+    return tasks
 
 @router.get("/api/tasks/{task_id}")
 async def get_task(task_id: str):
-    result = await crud.get_file_by_id(task_id)
+    result = await crud.get_task_by_id(task_id)
     if not result:
         raise HTTPException(status_code=404, detail="Task not found")
         
