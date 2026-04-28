@@ -81,10 +81,18 @@ async def worker_loop():
                                     await crud.update_progress(file_id, min(percent, 90), "Processing...")
                                 except: pass
                             
-                            if 'loading model' in line_str.lower() or 'initializing' in line_str.lower():
-                                await crud.update_progress(file_id, 20, "Loading model...")
-                            elif 'processing' in line_str.lower():
-                                await crud.update_progress(file_id, 50, "Processing image...")
+                            if 'initializing paddleocr' in line_str.lower():
+                                await crud.update_progress(file_id, 15, "Initializing engine...")
+                            elif 'loading model' in line_str.lower():
+                                await crud.update_progress(file_id, 25, "Loading OCR models...")
+                            elif 'model loaded successfully' in line_str.lower():
+                                await crud.update_progress(file_id, 40, "Models ready.")
+                            elif 'processing:' in line_str.lower():
+                                await crud.update_progress(file_id, 50, "Analyzing image...")
+                            elif 'ocr completed successfully' in line_str.lower():
+                                await crud.update_progress(file_id, 90, "OCR completed.")
+                            elif 'json ocr saved' in line_str.lower():
+                                await crud.update_progress(file_id, 95, "Saving data...")
                     
                     await process.wait()
                     if process.returncode != 0:

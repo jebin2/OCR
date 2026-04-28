@@ -17,7 +17,7 @@ def allowed_file(filename):
 async def index():
     return FileResponse('index.html')
 
-@router.post("/api/upload")
+@router.post("/api/tasks/upload")
 async def upload_image(image: UploadFile = File(...), hide_from_ui: str = Form("")):
     if not image.filename:
         raise HTTPException(status_code=400, detail="No file selected")
@@ -51,7 +51,7 @@ async def upload_image(image: UploadFile = File(...), hide_from_ui: str = Form("
         'message': 'File uploaded successfully'
     })
 
-@router.get("/api/files")
+@router.get("/api/tasks")
 async def get_files():
     rows, queue_ids, processing_count, avg_time = await crud.get_all_files()
     
@@ -80,11 +80,11 @@ async def get_files():
     
     return files
 
-@router.get("/api/files/{file_id}")
-async def get_file(file_id: str):
-    result = await crud.get_file_by_id(file_id)
+@router.get("/api/tasks/{task_id}")
+async def get_task(task_id: str):
+    result = await crud.get_file_by_id(task_id)
     if not result:
-        raise HTTPException(status_code=404, detail="File not found")
+        raise HTTPException(status_code=404, detail="Task not found")
         
     row, queue_position, estimated_start_seconds = result
     

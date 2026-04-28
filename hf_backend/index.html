@@ -486,7 +486,7 @@
             formData.append('image', window.selectedFile);
 
             try {
-                const res = await fetch(`${API_BASE}/upload`, { method: 'POST', body: formData });
+                const res = await fetch(`${API_BASE}/tasks/upload`, { method: 'POST', body: formData });
                 if (res.ok) {
                     window.selectedFile = null;
                     uploadZone.querySelector('p').innerText = 'Drop image here';
@@ -497,7 +497,7 @@
 
         async function loadFiles() {
             try {
-                const res = await fetch(`${API_BASE}/files`);
+                const res = await fetch(`${API_BASE}/tasks`);
                 const data = await res.json();
                 filesData = data;
                 renderQueue(data);
@@ -528,7 +528,7 @@
 
 
         async function showResult(id) {
-            const res = await fetch(`${API_BASE}/files/${id}`);
+            const res = await fetch(`${API_BASE}/tasks/${id}`);
             const data = await res.json();
             const text = data.ocr_text;
 
