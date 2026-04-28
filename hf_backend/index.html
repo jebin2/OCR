@@ -14,18 +14,18 @@
         :root {
             /* Colors */
             --bg: #334155;
-            --surface: #7dd3fc;
-            --surface-hover: #38bdf8;
-            --border: #0f172a;
-            --primary: #0f172a;
-            --primary-light: #bae6fd;
+            --surface: #5e3329;
+            --surface-hover: #7c4436;
+            --border: #2d1a15;
+            --primary: #2d1a15;
+            --primary-light: #a36555;
             --success: #14532d;
             --success-light: #86efac;
             --error: #7f1d1d;
             --error-light: #fca5a5;
-            --text-main: #000000;
+            --text-main: #fde6d2;
             --text-bg: #cbd5e1;
-            --text-dim: #1e1b4b;
+            --text-dim: #f5d0b1;
 
             /* Fonts */
             --font-main: 'Inter', sans-serif;
@@ -81,7 +81,7 @@
         .card {
             background: var(--surface);
             border: var(--border-width) solid var(--border);
-            border-radius: var(--radius-card);
+            border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
             padding: var(--spacing-lg);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
@@ -109,7 +109,7 @@
             color: var(--text-main);
             letter-spacing: 0.05em;
             transform: rotate(-2deg);
-            text-shadow: 2px 2px 0px var(--primary-light);
+            text-shadow: 2px 2px 0px var(--primary);
         }
 
         .status-badge {
@@ -142,7 +142,7 @@
 
         .upload-zone {
             flex: 1;
-            border: var(--border-width) dashed var(--border);
+            border: var(--border-width) dashed var(--text-main);
             border-radius: var(--radius-btn);
             display: flex;
             flex-direction: column;
@@ -151,7 +151,7 @@
             gap: var(--spacing-md);
             cursor: pointer;
             transition: all 0.2s ease;
-            background: rgba(15, 23, 42, 0.1);
+            background: rgba(253, 230, 210, 0.05);
         }
 
         .upload-zone:hover,
@@ -177,7 +177,7 @@
             color: var(--surface);
             border: var(--border-width) solid var(--border);
             padding: var(--spacing-md);
-            border-radius: var(--radius-btn);
+            border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -255,7 +255,7 @@
             padding: 1rem 0.5rem;
             font-size: 0.875rem;
             font-weight: 600;
-            border-bottom: 1px solid rgba(15, 23, 42, 0.1);
+            border-bottom: 1px solid rgba(253, 230, 210, 0.1);
             color: var(--text-main);
         }
 
@@ -326,7 +326,7 @@
             border: var(--border-width) solid var(--border);
             width: 100%;
             max-width: 800px;
-            border-radius: 20px;
+            border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
             display: flex;
             flex-direction: column;
             max-height: 80vh;
@@ -339,8 +339,8 @@
         .text-bold { font-weight: 700; color: var(--text-main); }
         .text-dimmed { font-size: 0.8rem; color: var(--text-main); opacity: 0.8; }
         .text-center { text-align: center; padding: 3rem; color: var(--text-bg); }
-        .progress-container { width: 100px; height: 4px; background: rgba(15, 23, 42, 0.2); border-radius: 2px; overflow: hidden; }
-        .progress-bar { height: 100%; background: var(--primary); }
+        .progress-container { width: 100px; height: 4px; background: rgba(253, 230, 210, 0.1); border-radius: 2px; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--text-main); }
         .file-name-cell { font-weight: 600; }
 
         .modal-header {
@@ -357,13 +357,13 @@
         }
 
         pre {
-            background: #bae6fd;
+            background: #47271f;
             border: var(--border-width) solid var(--border);
             padding: 1.25rem;
             border-radius: 0.75rem;
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.9rem;
-            color: #0f172a;
+            color: var(--text-main);
             white-space: pre-wrap;
             word-break: break-all;
         }
