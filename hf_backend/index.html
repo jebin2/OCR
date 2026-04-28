@@ -393,9 +393,14 @@
             <div class="logo-group">
                 <h1>OCR</h1>
             </div>
-            <div class="status-badge">
-                <div class="status-dot" id="healthDot"></div>
-                <span id="healthText">Service Online</span>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <div class="status-badge" id="apiDocBtn" style="cursor: pointer; background: rgba(99, 102, 241, 0.1); border-color: var(--primary);">
+                    <span style="color: var(--primary); font-weight: 600;">API DOC</span>
+                </div>
+                <div class="status-badge">
+                    <div class="status-dot" id="healthDot"></div>
+                    <span id="healthText">Service Online</span>
+                </div>
             </div>
         </header>
 
@@ -532,6 +537,8 @@
             const data = await res.json();
             const text = data.ocr_text;
 
+            document.querySelector('#resultModal .card-title').innerText = "Extracted Content";
+
             let formatted = text;
             try {
                 const parsed = JSON.parse(text);
@@ -545,6 +552,39 @@
         function closeModal() {
             document.getElementById('resultModal').classList.remove('active');
         }
+
+        document.getElementById('apiDocBtn').onclick = () => {
+            const doc = {
+                "base_url": window.location.origin,
+                "endpoints": [
+                    {
+                        "method": "POST",
+                        "path": "/api/tasks/upload",
+                        "desc": "Upload image for OCR",
+                        "body": "multipart/form-data { image: file }"
+                    },
+                    {
+                        "method": "GET",
+                        "path": "/api/tasks",
+                        "desc": "List all tasks"
+                    },
+                    {
+                        "method": "GET",
+                        "path": "/api/tasks/{task_id}",
+                        "desc": "Get task details & OCR result"
+                    },
+                    {
+                        "method": "GET",
+                        "path": "/health",
+                        "desc": "Service health check"
+                    }
+                ],
+                "example_usage": "curl -X POST -F 'image=@file.jpg' " + window.location.origin + "/api/tasks/upload"
+            };
+            document.getElementById('resultText').innerText = JSON.stringify(doc, null, 2);
+            document.querySelector('#resultModal .card-title').innerText = "API Documentation";
+            document.getElementById('resultModal').classList.add('active');
+        };
 
         // Health Check
         async function checkHealth() {
