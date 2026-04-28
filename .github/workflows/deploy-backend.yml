@@ -113,5 +113,5 @@ jobs:
       - name: Deployment Summary
         run: |
           echo "🚀 Deployment completed!"
-          echo "📍 Space URL: https://huggingface.co/spaces/jebin2/OCR"
+          echo "📍 Space URL: https://huggingface.co/spaces/jebin2/ocr"
           echo "📝 Commit SHA: ${{ github.sha }}"
