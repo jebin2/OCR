@@ -23,7 +23,8 @@
             --success-light: #86efac;
             --error: #7f1d1d;
             --error-light: #fca5a5;
-            --text-main: #0f172a;
+            --text-main: #000000;
+            --text-bg: #cbd5e1;
             --text-dim: #1e1b4b;
         }
 
@@ -36,7 +37,7 @@
 
         body {
             background-color: var(--bg);
-            color: var(--text-main);
+            color: var(--text-bg);
             height: 100vh;
             width: 100vw;
             margin: 0;
@@ -89,6 +90,7 @@
             color: var(--text-main);
             letter-spacing: 0.05em;
             transform: rotate(-2deg);
+            text-shadow: 2px 2px 0px var(--primary-light);
         }
 
         .status-badge {
@@ -96,7 +98,8 @@
             align-items: center;
             gap: 0.5rem;
             font-size: 0.875rem;
-            color: var(--text-dim);
+            color: var(--text-main);
+            font-weight: 700;
             padding: 0.5rem 1rem;
             background: rgba(15, 23, 42, 0.1);
             border-radius: 999px;
@@ -182,10 +185,11 @@
         }
 
         .card-title {
-            font-size: 1.5rem;
-            font-weight: 400;
+            font-size: 1.6rem;
+            font-weight: 700;
             font-family: 'Patrick Hand', cursive;
             color: var(--text-main);
+            letter-spacing: 0.02em;
         }
 
         .refresh-btn {
@@ -231,6 +235,7 @@
         td {
             padding: 1rem 0.5rem;
             font-size: 0.875rem;
+            font-weight: 600;
             border-bottom: 1px solid rgba(15, 23, 42, 0.1);
             color: var(--text-main);
         }
@@ -245,8 +250,8 @@
         }
 
         .pill-not_started {
-            background: rgba(15, 23, 42, 0.1);
-            color: #334155;
+            background: rgba(15, 23, 42, 0.15);
+            color: var(--text-main);
         }
 
         .pill-processing {
