@@ -1,0 +1,55 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ocr-runner"
+version = "1.0.0"
+authors = [
+    {name = "Jebin Einstein", email = "jebin@gmail.com"}
+]
+description = "A flexible, multi-engine OCR runner"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+dependencies = [
+    "torch",
+    "numpy",
+    "opencv-python-headless",
+    "python-dotenv",
+    "psutil",
+    "pdf2image",
+]
+
+[project.optional-dependencies]
+paddleocr = [
+    "paddlepaddle>=2.6.2,<3",
+    "paddleocr>=2.7.0,<2.8",
+    "numpy<1.24",
+    "opencv-python-headless<=4.8.1",
+]
+easyocr = [
+    "easyocr",
+    "Pillow",
+]
+all = [
+    "paddlepaddle>=2.6.2,<3",
+    "paddleocr>=2.7.0,<2.8",
+    "numpy<1.24",
+    "opencv-python-headless<=4.8.1",
+    "easyocr",
+    "Pillow",
+]
+
+[project.scripts]
+ocr-process = "ocr.runner:main"
+
+[project.urls]
+Homepage = "https://github.com/jebin2/OCR"
