@@ -12,14 +12,12 @@ RUN apt-get update && apt-get install -y \
     libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first for better caching
-COPY requirements.txt .
-
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy application files
+# Copy project files
+COPY pyproject.toml .
 COPY . .
+
+# Install dependencies and project
+RUN pip install --no-cache-dir .
 
 # Create necessary directories
 RUN mkdir -p uploads temp_dir

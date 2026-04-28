@@ -496,9 +496,10 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>File</th>
+                            <th>Filename</th>
                             <th>Status</th>
                             <th>Progress</th>
+                            <th>Est. Wait</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -595,10 +596,20 @@
 
         function renderQueue(files) {
             if (files.length === 0) {
-                queueBody.innerHTML = '<tr><td colspan="4" class="text-center">No tasks found</td></tr>';
+                queueBody.innerHTML = '<tr><td colspan="5" class="text-center">No tasks found</td></tr>';
                 return;
             }
-            queueBody.innerHTML = files.map(f => `
+            queueBody.innerHTML = files.map(f => {
+                let estWait = '—';
+                if (f.status === 'not_started' && f.estimated_start_seconds !== null) {
+                    const s = f.estimated_start_seconds;
+                    estWait = s < 60 ? `${s}s` : `${Math.floor(s/60)}m`;
+                    if (f.queue_position) estWait = `#${f.queue_position} (${estWait})`;
+                } else if (f.status === 'processing') {
+                    estWait = '⏳ Processing...';
+                }
+
+                return `
                 <tr>
                     <td class="file-name-cell">${f.filename}</td>
                     <td><span class="status-pill pill-${f.status}">${f.status.replace('_', ' ')}</span></td>
@@ -607,11 +618,12 @@
                             <div class="progress-bar" style="width:${f.progress}%"></div>
                         </div>
                     </td>
+                    <td>${estWait}</td>
                     <td>
                         ${f.status === 'completed' ? `<button class="btn-view" onclick="showResult('${f.id}')">View</button>` : '—'}
                     </td>
-                </tr>
-            `).join('');
+                </tr>`;
+            }).join('');
         }
 
 

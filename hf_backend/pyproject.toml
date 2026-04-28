@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ocr-runner-backend"
+version = "2.0.0"
+description = "FastAPI backend for OCR Runner"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "aiosqlite",
+    "aiofiles",
+    "python-multipart",
+    "custom_logger @ git+https://github.com/jebin2/custom_logger.git",
+    "ocr-runner[paddleocr] @ git+https://github.com/jebin2/OCR.git"
+]
+
+[project.scripts]
+ocr-backend = "app.main:app"
