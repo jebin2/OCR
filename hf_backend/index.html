@@ -630,7 +630,7 @@
         async function showResult(id) {
             const res = await fetch(`${API_BASE}/tasks/${id}`);
             const data = await res.json();
-            const text = data.ocr_text;
+            const text = data.result;
 
             document.querySelector('#resultModal .card-title').innerText = "Extracted Content";
 

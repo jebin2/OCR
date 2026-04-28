@@ -13,17 +13,17 @@ async def insert_file(file_id: str, filename: str, filepath: str, status: str, h
         await db.commit()
     logger.debug(f"Inserted file {filename} (ID: {file_id}) into database.")
 
-async def update_status(file_id: str, status: str, ocr_text: str = None, error: str = None):
+async def update_status(file_id: str, status: str, result: str = None, error: str = None):
     async with aiosqlite.connect(settings.DATABASE_FILE) as db:
         if status == 'completed':
             await db.execute('''UPDATE image_files 
-                         SET status = ?, ocr_text = ?, processed_at = ?, progress = 100, progress_text = 'Completed'
+                         SET status = ?, result = ?, processed_at = ?, progress = 100, progress_text = 'Completed'
                          WHERE id = ?''',
-                      (status, ocr_text, datetime.now().isoformat(), file_id))
+                      (status, result, datetime.now().isoformat(), file_id))
             logger.info(f"File ID {file_id} marked as completed.")
         elif status == 'failed':
             await db.execute('''UPDATE image_files 
-                         SET status = ?, ocr_text = ?, processed_at = ?, progress_text = 'Failed'
+                         SET status = ?, result = ?, processed_at = ?, progress_text = 'Failed'
                          WHERE id = ?''',
                       (status, f"Error: {error}", datetime.now().isoformat(), file_id))
             logger.error(f"File ID {file_id} marked as failed. Error: {error}")

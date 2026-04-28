@@ -104,12 +104,12 @@ async def worker_loop():
                     with open(output_path, 'r') as file:
                         result = json.loads(file.read().strip())
                     
-                    ocr_text = result.get('text', '') or str(result)
+                    result_data = result.get('text', '') or str(result)
                     
                     logger.success(f"Successfully processed: {filename}")
-                    logger.info(f"Text preview: {ocr_text[:100]}...")
+                    logger.info(f"Text preview: {result_data[:100]}...")
                     
-                    await crud.update_status(file_id, 'completed', ocr_text=json.dumps(result))
+                    await crud.update_status(file_id, 'completed', result=json.dumps(result))
                     
                     if os.path.exists(filepath):
                         os.remove(filepath)

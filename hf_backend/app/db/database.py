@@ -10,7 +10,7 @@ async def init_db():
                       filename TEXT NOT NULL,
                       filepath TEXT NOT NULL,
                       status TEXT NOT NULL,
-                      ocr_text TEXT,
+                      result TEXT,
                       created_at TEXT NOT NULL,
                       processed_at TEXT,
                       progress INTEGER DEFAULT 0,
