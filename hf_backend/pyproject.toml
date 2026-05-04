@@ -18,3 +18,6 @@ dependencies = [
 
 [project.scripts]
 ocr-backend = "app.main:app"
+
+[tool.setuptools.packages.find]
+include = ["app*"]
